@@ -213,19 +213,11 @@ async def process_video(
         # Process with ffmpeg (simple enhancement)
         # Sharpening + color adjustment + audio normalization
         
-        # Sora watermark moves: bottom-left, middle-right, top-left
-        # Apply delogo to all possible positions
-        watermark_removal = ",".join([
-            "delogo=x=iw*0.02:y=ih*0.92:w=iw*0.12:h=ih*0.06",  # bottom-left
-            "delogo=x=iw*0.86:y=ih*0.45:w=iw*0.12:h=ih*0.06",  # middle-right  
-            "delogo=x=iw*0.02:y=ih*0.02:w=iw*0.12:h=ih*0.06",  # top-left
-            "delogo=x=iw*0.86:y=ih*0.92:w=iw*0.12:h=ih*0.06",  # bottom-right (just in case)
-        ])
-        
+        # Video enhancement filters (watermark removal needs AI - future upgrade)
         video_filters = {
-            "cinematic": f"{watermark_removal},eq=contrast=1.1:brightness=0.02:saturation=0.95,unsharp=5:5:0.5",
-            "vivid": f"{watermark_removal},eq=contrast=1.15:brightness=0.03:saturation=1.3,unsharp=5:5:0.7",
-            "clean": f"{watermark_removal},unsharp=3:3:0.3"
+            "cinematic": "eq=contrast=1.1:brightness=0.02:saturation=0.95,unsharp=5:5:0.5",
+            "vivid": "eq=contrast=1.15:brightness=0.03:saturation=1.3,unsharp=5:5:0.7",
+            "clean": "unsharp=3:3:0.3"
         }
         
         audio_filters = {
