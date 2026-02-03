@@ -213,16 +213,21 @@ async def process_video(
         # Process with ffmpeg (simple enhancement)
         # Sharpening + color adjustment + audio normalization
         
+        # Sora watermark is bottom-right. Remove with delogo filter
+        # Typical position: last 5% height, last 10% width
+        # delogo=x=W-W*0.12:y=H-H*0.08:w=W*0.10:h=H*0.05:show=0
+        watermark_removal = "delogo=x=iw*0.88:y=ih*0.92:w=iw*0.10:h=ih*0.06"
+        
         video_filters = {
-            "cinematic": "eq=contrast=1.1:brightness=0.02:saturation=0.95,unsharp=5:5:0.5",
-            "vivid": "eq=contrast=1.15:brightness=0.03:saturation=1.3,unsharp=5:5:0.7",
-            "clean": "unsharp=3:3:0.3"
+            "cinematic": f"{watermark_removal},eq=contrast=1.1:brightness=0.02:saturation=0.95,unsharp=5:5:0.5",
+            "vivid": f"{watermark_removal},eq=contrast=1.15:brightness=0.03:saturation=1.3,unsharp=5:5:0.7",
+            "clean": f"{watermark_removal},unsharp=3:3:0.3"
         }
         
         audio_filters = {
-            "balanced": "loudnorm=I=-16:TP=-1.5:LRA=11",
-            "voice": "highpass=f=80,loudnorm=I=-16:TP=-1.5:LRA=11,equalizer=f=3000:t=q:w=1:g=3",
-            "music": "loudnorm=I=-14:TP=-1:LRA=11"
+            "balanced": "highpass=f=60,anlmdn=s=0.0001,acompressor=threshold=-20dB:ratio=3:attack=5:release=100,loudnorm=I=-16:TP=-1.5:LRA=11",
+            "voice": "highpass=f=100,anlmdn=s=0.0003,equalizer=f=200:t=q:w=1:g=-3,equalizer=f=3000:t=q:w=1:g=4,acompressor=threshold=-18dB:ratio=4:attack=3:release=80,loudnorm=I=-16:TP=-1.5:LRA=11",
+            "music": "anlmdn=s=0.00005,acompressor=threshold=-24dB:ratio=2:attack=10:release=200,loudnorm=I=-14:TP=-1:LRA=11"
         }
         
         vf = video_filters.get(video_preset, video_filters["cinematic"])
