@@ -1,8 +1,9 @@
-aiofiles
-fastapi
-uvicorn
-python-multipart
-numpy
-pillow
-opencv-python-headless
-tqdm
+# Lightweight - no AI/GPU (for free tier hosting)
+aiofiles==25.1.0
+fastapi==0.128.0
+uvicorn==0.40.0
+python-multipart==0.0.22
+numpy==2.4.2
+pillow==12.1.0
+opencv-python-headless==4.13.0.90
+tqdm==4.67.2

@@ -12,18 +12,21 @@ import tempfile
 from pathlib import Path
 from tqdm import tqdm
 
-# Check for GPU (lazy load torch)
+# Check for GPU (lazy load torch) - AI is optional
 DEVICE = 'cpu'
+AI_AVAILABLE = False
+
 def get_device():
-    global DEVICE
+    global DEVICE, AI_AVAILABLE
     try:
         import torch
+        AI_AVAILABLE = True
         if torch.backends.mps.is_available():
             DEVICE = 'mps'
         elif torch.cuda.is_available():
             DEVICE = 'cuda'
-    except:
-        pass
+    except ImportError:
+        AI_AVAILABLE = False
     return DEVICE
 
 
@@ -96,7 +99,7 @@ def process_frames(input_dir: str, output_dir: str, use_ai: bool = False,
     frames = sorted([f for f in os.listdir(input_dir) if f.endswith('.png')])
     
     upsampler = None
-    if use_ai:
+    if use_ai and AI_AVAILABLE:
         try:
             from realesrgan import RealESRGANer
             from basicsr.archs.rrdbnet_arch import RRDBNet
