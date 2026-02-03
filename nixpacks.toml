@@ -2,7 +2,12 @@
 nixPkgs = ["python312", "ffmpeg"]
 
 [phases.install]
-cmds = ["python -m venv /opt/venv && /opt/venv/bin/pip install -r requirements.txt"]
+cmds = [
+  "python -m venv /opt/venv",
+  "/opt/venv/bin/pip install --upgrade pip",
+  "/opt/venv/bin/pip uninstall -y opencv-python 2>/dev/null || true",
+  "/opt/venv/bin/pip install opencv-python-headless==4.9.0.80 numpy pillow tqdm aiofiles fastapi uvicorn python-multipart"
+]
 
 [phases.build]
 cmds = []
